@@ -34,7 +34,7 @@ If you use virtualenv, set-up virtual environment with a kernel:
 Then activate the environment:
 
  ```bash
-source activate olx-jobs-research
+source activate jobs-research
  ```
 
 ## Steps to reproduce the results

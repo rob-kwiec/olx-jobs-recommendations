@@ -4,7 +4,7 @@
 UNAME := $(shell uname)
 
 PROJECT_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-PROJECT_NAME := olx-jobs-research
+PROJECT_NAME := jobs-research
 SHELL=/bin/bash
 TESTS_DIR=./tests
 
