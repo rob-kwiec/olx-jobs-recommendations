@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Pycharm
+.idea
+venv/
+.DS_Store
+.vscode/
+
+# Jupyter NB Checkpoints
+.ipynb_checkpoints/
+
+*.tsv
+*.csv
+*.gzip
+*.json
+.venv
+.cenv
+.venv-runbooks
+
+# exclude custom folders
+data/

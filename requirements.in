@@ -1,0 +1,13 @@
+numpy
+pandas
+scipy==1.5.2
+sqlalchemy
+pyhive
+pyarrow
+data-toolz
+tqdm
+implicit
+matplotlib
+scikit-learn==0.23.1
+scikit-optimize
+gensim
