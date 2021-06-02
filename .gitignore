@@ -20,4 +20,4 @@ venv/
 .venv-runbooks
 
 # exclude custom folders
-data/
+./data/
