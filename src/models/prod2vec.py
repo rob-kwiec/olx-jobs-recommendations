@@ -9,8 +9,8 @@ import pandas as pd
 from gensim.models import Word2Vec
 from tqdm import tqdm
 
-from .base import BaseRecommender
 from ..data.initializer import DataLoaderSaver
+from .base import BaseRecommender
 
 WORKERS = cpu_count()
 

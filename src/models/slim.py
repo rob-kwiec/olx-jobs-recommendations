@@ -11,8 +11,8 @@ from sklearn.linear_model import ElasticNet
 from sklearn.utils.testing import ignore_warnings
 from tqdm import tqdm
 
-from .base import BaseRecommender
 from ..data.initializer import DataLoaderSaver
+from .base import BaseRecommender
 
 
 class SLIM(BaseRecommender, DataLoaderSaver):
