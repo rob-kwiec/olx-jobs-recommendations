@@ -85,17 +85,17 @@ kernel-clean: venv-clean cenv-clean
 
 .PHONY: check-env
 ## checks that local environment is synced with requirements.txt file
-check-env:
+check-env: ./.venv/.requirements
 	$(VENV)/bin/pip-sync -n
 
 .PHONY: sync-env
 ## syncs local environment according to the requirements.txt file (note: it will remove dependencies not present in the file)
-sync-env:
+sync-env: ./.venv/.requirements
 	$(VENV)/bin/pip-sync
 
 .PHONY: compile-reqs
 ## compiles the requirements from requirements.in and updates the requirements.txt file accordingly
-compile-reqs:
+compile-reqs: ./.venv/.requirements
 	$(VENV)/bin/pip-compile requirements.in
 	$(VENV)/bin/pip-compile requirements-dev.in
 
