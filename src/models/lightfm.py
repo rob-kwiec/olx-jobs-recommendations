@@ -17,7 +17,7 @@ from .base import BaseRecommender
 
 class LFM(BaseRecommender, DataLoaderSaver):
     """
-    Wrapper over ALS model
+    Wrapper over LightFM model
     """
 
     def __init__(
@@ -35,7 +35,6 @@ class LFM(BaseRecommender, DataLoaderSaver):
         max_sampled=10,
         random_state=42,
         epochs=20,
-        event_weights_multiplier=100,
         show_progress=True,
     ):
         """
@@ -122,10 +121,6 @@ class LFM(BaseRecommender, DataLoaderSaver):
             the data and initializing the parameters.
 
         epochs: (int, optional) number of epochs to run
-
-        event_weights_multiplier: int, optional
-            The multiplier of weights.
-            Used to find a tradeoff between the importance of interacted and not interacted items.
         """
 
         super().__init__()
@@ -145,7 +140,6 @@ class LFM(BaseRecommender, DataLoaderSaver):
             random_state=random_state,
         )
         self.epochs = epochs
-        self.event_weights_multiplier = event_weights_multiplier
 
         # data
         self.interactions = None
@@ -162,7 +156,7 @@ class LFM(BaseRecommender, DataLoaderSaver):
         """
 
         data = self.interactions.copy()
-        data["event_value"] = self.event_weights_multiplier
+        data["event_value"] = 1
 
         self.user_code_id = dict(enumerate(data["user"].unique()))
         self.user_id_code = {v: k for k, v in self.user_code_id.items()}
