@@ -1,5 +1,6 @@
 """Module implementing Random recommender, which recommends random items"""
 
+import random
 from functools import partial
 from multiprocessing.pool import ThreadPool
 
@@ -7,10 +8,9 @@ import numpy as np
 import pandas as pd
 from scipy import sparse
 from tqdm import tqdm
-import random
 
-from .base import BaseRecommender
 from ..data.initializer import DataLoaderSaver
+from .base import BaseRecommender
 
 
 class Random(BaseRecommender, DataLoaderSaver):

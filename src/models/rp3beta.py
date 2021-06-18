@@ -9,8 +9,8 @@ from scipy import sparse
 from sklearn.preprocessing import normalize
 from tqdm import tqdm
 
-from .base import BaseRecommender
 from ..data.initializer import DataLoaderSaver
+from .base import BaseRecommender
 
 
 class RP3Beta(BaseRecommender, DataLoaderSaver):

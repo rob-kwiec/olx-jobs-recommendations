@@ -1,11 +1,12 @@
 """Module providing a model factory getter"""
 
 from .als import ALS
+from .lightfm import LFM
 from .prod2vec import Prod2Vec
+from .random import Random
 from .rp3beta import RP3Beta
 from .slim import SLIM
 from .toppop import TopPop
-from .random import Random
 
 
 def initialize_model(model_type: str, **kwargs):
@@ -26,4 +27,6 @@ def initialize_model(model_type: str, **kwargs):
         return TopPop(**kwargs)
     if model_type == "random":
         return Random(**kwargs)
+    if model_type == "lightfm":
+        return LFM(**kwargs)
     raise ValueError(model_type)

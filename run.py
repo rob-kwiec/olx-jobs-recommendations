@@ -13,10 +13,10 @@ from tqdm import tqdm
 
 from src.common import config
 from src.common.helpers import (
-    efficiency,
-    get_unix_path,
     df_from_dir,
+    efficiency,
     get_interactions_subset,
+    get_unix_path,
 )
 from src.data import splitting
 from src.data.initializer import DataLoaderSaver
@@ -41,7 +41,7 @@ def parse_args(parser):
     parser.add_argument(
         "--models",
         type=json.loads,
-        default=["rp3beta", "als", "prod2vec", "slim", "toppop", "random"],
+        default=["rp3beta", "als", "prod2vec", "slim", "toppop", "random", "lightfm"],
     )
     parser.add_argument(
         "--models_skip_tuning",

@@ -8,8 +8,8 @@ import pandas as pd
 from scipy import sparse
 from tqdm import tqdm
 
-from .base import BaseRecommender
 from ..data.initializer import DataLoaderSaver
+from .base import BaseRecommender
 
 
 class TopPop(BaseRecommender, DataLoaderSaver):

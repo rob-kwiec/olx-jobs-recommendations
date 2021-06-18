@@ -16,6 +16,7 @@ class DataLoaderSaver:
 
     def load_interactions(self, path):
         """Loads interactions dataset"""
+
         def _load_interactions(path, compression=None):
             self.interactions = pd.read_csv(
                 path,
@@ -25,10 +26,10 @@ class DataLoaderSaver:
             ).astype({"user": str, "item": str, "event": str, "timestamp": int})
 
         # to support loading datasets provided in csv format
-        path_csv = Path(os.path.splitext(path)[0] + '.csv')
+        path_csv = Path(os.path.splitext(path)[0] + ".csv")
 
         if os.path.exists(path):
-            _load_interactions(path, compression='gzip')
+            _load_interactions(path, compression="gzip")
         elif os.path.exists(path_csv):
             _load_interactions(path_csv)
         else:
