@@ -41,7 +41,8 @@ def parse_args(parser):
     parser.add_argument(
         "--models",
         type=json.loads,
-        default=["perfect"],
+        default=["als", "prod2vec", "rp3beta", "slim", "toppop", 
+                        "random", "perfect", "perfect_cf", "perfect_cf_d3"],
     )
     parser.add_argument(
         "--models_skip_tuning",
