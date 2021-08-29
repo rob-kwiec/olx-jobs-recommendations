@@ -41,16 +41,15 @@ def parse_args(parser):
     parser.add_argument(
         "--models",
         type=json.loads,
-        default=["rp3beta", "als", "prod2vec", "slim", "toppop", "random", "lightfm"],
+        default=["als", "prod2vec", "rp3beta", "slim", "toppop", 
+                        "random", "perfect", "perfect_cf", "perfect_cf_d3"],
     )
     parser.add_argument(
         "--models_skip_tuning",
         type=json.loads,
         default=["toppop", "random"],
     )
-    parser.add_argument(
-        "--steps", type=json.loads, default=["prepare", "tune", "run", "evaluate"]
-    )
+    parser.add_argument("--steps", type=json.loads, default=["run", "evaluate"])
     parser.add_argument("--n_recommendations", type=int, default=10)
     parser.add_argument("--validation_target_users_size", type=int, default=30000)
     parser.add_argument("--validation_fraction_users", type=float, default=0.2)
@@ -215,6 +214,7 @@ def step_tune(
 
 def step_run(
     path_train_and_validation,
+    path_test,
     path_target_users,
     path_tuning_dir,
     path_efficiency_dir,
@@ -240,6 +240,8 @@ def step_run(
             path_tuning_dir=path_tuning_dir,
             model_name=model_name,
         )
+        if model_name in ["perfect", "perfect_cf", "perfect_cf_d3"]:
+            model_parameters.update({"path_test": path_test})
 
         model = initialize_model(model_name, **model_parameters)
         model.set_interactions(interactions)
@@ -334,6 +336,7 @@ def steps_factory(step, args, paths):
     if step == "run":
         step_run(
             path_train_and_validation=paths.train_and_validation,
+            path_test=paths.test,
             path_target_users=paths.target_users,
             path_tuning_dir=paths.tuning_dir,
             path_efficiency_dir=paths.results_efficiency_dir,
