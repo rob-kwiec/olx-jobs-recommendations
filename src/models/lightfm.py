@@ -193,6 +193,7 @@ class LFM(BaseRecommender, DataLoaderSaver):
         :return:
             pd.DataFrame (user, item_1, item_2, ..., item_n)
         """
+        items_to_recommend = np.arange(len(self.item_code_id))
 
         with ThreadPool() as thread_pool:
             recommendations = list(
@@ -201,6 +202,7 @@ class LFM(BaseRecommender, DataLoaderSaver):
                         partial(
                             self.recommend_per_user,
                             n_recommendations=n_recommendations,
+                            items_to_recommend=items_to_recommend,
                         ),
                         target_users,
                     ),
@@ -210,25 +212,30 @@ class LFM(BaseRecommender, DataLoaderSaver):
 
         return pd.DataFrame(recommendations)
 
-    def recommend_per_user(self, user, n_recommendations):
+    def recommend_per_user(self, user, n_recommendations, items_to_recommend):
         """
         Recommends n items per user
         :param user: User id
         :param n_recommendations: Number of recommendations
         :return: list of format [user_id, item1, item2 ...]
         """
-        user_id = self.user_id_code.get(user)
+        u_code = self.user_id_code.get(user)
 
-        item_recommendations = []
-        if user_id is not None:
+        if u_code is not None:
+            interacted_items = self.train_ui.indices[
+                self.train_ui.indptr[u_code] : self.train_ui.indptr[u_code + 1]
+            ]
 
-            items_to_recommend = np.setdiff1d(
-                np.arange(len(self.item_code_id)), self.train_ui[user_id].indices
-            )
-            scores = self.model.predict(int(user_id), items_to_recommend)
-            item_recommendations = np.vectorize(self.item_code_id.get)(
-                items_to_recommend[np.argsort(-scores)]
-            )[:n_recommendations].tolist()
+            scores = self.model.predict(int(u_code), items_to_recommend)
+
+            item_recommendations = items_to_recommend[np.argsort(-scores)][
+                : n_recommendations + len(interacted_items)
+            ]
+            item_recommendations = [
+                self.item_code_id[item]
+                for item in item_recommendations
+                if item not in interacted_items
+            ]
 
         return (
             [user]
