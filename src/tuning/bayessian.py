@@ -136,7 +136,9 @@ def tune(
             recommendations = model.recommend(
                 target_users=target_users, n_recommendations=n_recommendations
             )
-            score = evaluate(recommendations, preprocessed_test, top_k=n_recommendations)
+            score = evaluate(
+                recommendations, preprocessed_test, top_k=n_recommendations
+            )
         except ValueError:
             score = 0
 

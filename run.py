@@ -59,7 +59,9 @@ def parse_args(parser):
         type=json.loads,
         default=["toppop", "random", "perfect", "perfect_cf", "perfect_cf_d3"],
     )
-    parser.add_argument("--steps", type=json.loads, default=["tune", "run", "evaluate"])
+    parser.add_argument(
+        "--steps", type=json.loads, default=["prepare", "tune", "run", "evaluate"]
+    )
     parser.add_argument("--n_recommendations", type=int, default=10)
     parser.add_argument("--validation_target_users_size", type=int, default=30000)
     parser.add_argument("--validation_fraction_users", type=float, default=0.2)
