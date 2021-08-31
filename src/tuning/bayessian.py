@@ -128,15 +128,19 @@ def tune(
 
     @use_named_args(space)
     def _objective(**model_parameters):
-        model = initialize_model(model_name, **model_parameters)
-        model.set_interactions(interactions)
-        model.preprocess()
-        model.fit()
-        recommendations = model.recommend(
-            target_users=target_users, n_recommendations=n_recommendations
-        )
-
-        score = evaluate(recommendations, preprocessed_test, top_k=n_recommendations)
+        try:
+            model = initialize_model(model_name, **model_parameters)
+            model.set_interactions(interactions)
+            model.preprocess()
+            model.fit()
+            recommendations = model.recommend(
+                target_users=target_users, n_recommendations=n_recommendations
+            )
+            score = evaluate(
+                recommendations, preprocessed_test, top_k=n_recommendations
+            )
+        except ValueError:
+            score = 0
 
         save_evaluation_results(model_name, score, model_parameters, output_dir)
 

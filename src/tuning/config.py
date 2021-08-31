@@ -30,11 +30,22 @@ MODEL_SEARCH_SPACES = {
         Integer(5, 20, name="iterations"),
         Integer(10, 500, name="event_weights_multiplier"),
     ],
+    "lightfm": [
+        Integer(8, 512, name="no_components"),
+        Integer(1, 10, name="k"),
+        Integer(1, 20, name="n"),
+        Categorical(["adagrad", "adadelta"], name="learning_schedule"),
+        Categorical(["logistic", "bpr", "warp", "warp-kos"], name="loss"),
+        Integer(1, 100, name="max_sampled"),
+        Integer(1, 20, name="epochs"),
+    ],
 }
+
 
 MODEL_TUNING_CONFIGURATION = {
     "rp3beta": {"n_calls": 100},
     "prod2vec": {"n_calls": 100},
     "slim": {"n_calls": 100, "x0": [0, 0, 1]},
     "als": {"n_calls": 100},
+    "lightfm": {"n_calls": 100},
 }
