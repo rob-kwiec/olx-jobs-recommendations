@@ -16,6 +16,8 @@ Currently implemented models:
   implementation based on [Gensim](https://github.com/RaRe-Technologies/gensim) Word2vec implementation
 - RP3Beta proposed in [Updatable, Accurate, Diverse, and Scalable Recommendations for Interactive Applications](https://www.researchgate.net/publication/312430075_Updatable_Accurate_Diverse_and_Scalable_Recommendations_for_Interactive_Applications)
 - SLIM: proposed in [SLIM: Sparse Linear Methods for Top-N Recommender Systems](https://www.researchgate.net/publication/220765374_SLIM_Sparse_Linear_Methods_for_Top-N_Recommender_Systems)
+- LightFM: proposed in [Metadata Embeddings for User and Item Cold-start Recommendations](https://www.researchgate.net/publication/280589936_Metadata_Embeddings_for_User_and_Item_Cold-start_Recommendations);
+  implementation based on the original [LightFM](https://github.com/lyst/lightfm) implementation
   
 ## Environment configuration
 
