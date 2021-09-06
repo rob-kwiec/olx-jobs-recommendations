@@ -49,9 +49,6 @@ def parse_args(parser):
             "ligthfm",
             "toppop",
             "random",
-            "perfect",
-            "perfect_cf",
-            "perfect_cf_d3",
         ],
     )
     parser.add_argument(

@@ -41,3 +41,13 @@ def get_recommendations(models_to_evaluate, recommendations_path):
         for model in models
         if model[0] in models_to_evaluate
     }
+
+
+def _get_models(models_to_evaluate, recommendations_path):
+    models = [
+        (file_name.split(".")[0], file_name)
+        for file_name in os.listdir(recommendations_path)
+    ]
+    if models_to_evaluate:
+        return [model for model in models if model[0] in models_to_evaluate]
+    return models
