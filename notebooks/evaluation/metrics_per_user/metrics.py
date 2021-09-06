@@ -45,7 +45,7 @@ def ranking_metrics(test_matrix, recommendations, k=10):
     return pd.DataFrame(
         result,
         columns=[
-            "user_code",
+            "user",
             "precision",
             "recall",
             "ndcg",
