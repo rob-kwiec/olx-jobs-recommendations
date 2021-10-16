@@ -109,8 +109,8 @@ class Evaluator:
 
             evaluation_results = pd.concat([evaluation_results, evaluation_result])
 
-        item_code_id = {code: id for id, code in self.user_map.items()}
-        evaluation_results["user"] = evaluation_results["user"].apply(item_code_id.get)
+        user_code_id = {code: id for id, code in self.user_map.items()}
+        evaluation_results["user"] = evaluation_results["user"].apply(user_code_id.get)
         evaluation_results.to_csv(
             self.output_path / "results.gzip", compression="gzip", index=None
         )
