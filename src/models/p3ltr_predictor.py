@@ -1,44 +1,39 @@
-"""Module implementing a RP3Beta model"""
+"""Module implementing a a P3LTR Predictor"""
 
 from functools import partial
 from multiprocessing.pool import ThreadPool
 
 import numpy as np
 import pandas as pd
+import torch
 from scipy import sparse
-from sklearn.preprocessing import normalize
 from tqdm import tqdm
 
-from ..data.initializer import DataLoaderSaver
 from .base import BaseRecommender
+from ..data.initializer import DataLoaderSaver
 
 
-class RP3Beta(BaseRecommender, DataLoaderSaver):
+class P3LTRPredictor(BaseRecommender, DataLoaderSaver):
     """
-    RP3Beta model proposed in the paper "Updatable, Accurate, Diverse, and Scalable Recommendations for Interactive
-    Applications". In our implementation we perform direct computations on sparse matrices instead of random walks
-    approximation.
+    P3LTR model predictor
     """
 
     def __init__(
         self,
-        alpha=1,
-        beta=0,
-        show_progress=True,
+        feature_encoders,
+        feature_preprocessor,
     ):
         super().__init__()
 
-        self.alpha = alpha
-        self.beta = beta
+        self.feature_encoders = feature_encoders
+        self.feature_preprocessor = feature_preprocessor
 
         # data
         self.interactions = None
-        self.train_ui = None
         self.user_id_code = None
         self.user_code_id = None
         self.item_code_id = None
-        self.show_progress = show_progress
-        self.p_ui = None
+        self.p = None
         self.similarity_matrix = None
 
     def preprocess(self):
@@ -56,26 +51,36 @@ class RP3Beta(BaseRecommender, DataLoaderSaver):
         item_id_code = {v: k for k, v in self.item_code_id.items()}
         data["item_code"] = data["item"].apply(item_id_code.get)
 
-        self.train_ui = sparse.csr_matrix(
-            (np.ones(len(data)), (data["user_code"], data["item_code"]))
-        )
+        features = self.feature_preprocessor.preprocess(data)
+        is_direction_ui = features["is_direction_ui"]
+
+        # define transition matrices p
+        self.p = 3 * [None]
+        with torch.no_grad():
+            for layer, mask in [
+                (0, is_direction_ui),
+                (1, ~is_direction_ui),
+                (2, is_direction_ui),
+            ]:
+                event_values_ui = np.array(
+                    self.feature_encoders[layer](
+                        destination_degree=features["destination_degree"][mask],
+                        recency=features["recency"][mask],
+                        events=features["events"][mask],
+                    ).flatten()
+                )
+                self.p[layer] = sparse.csr_matrix(
+                    (
+                        event_values_ui,
+                        (features["source"][mask], features["destination"][mask]),
+                    )
+                )
 
     def fit(self):
         """
         Fit the model
         """
-        # Define Pui
-        self.p_ui = normalize(self.train_ui, norm="l1", axis=1).power(self.alpha)
-
-        # Define Piu
-        p_iu = normalize(
-            self.train_ui.transpose(copy=True).tocsr(), norm="l1", axis=1
-        ).power(self.alpha)
-
-        self.similarity_matrix = p_iu * self.p_ui
-        item_orders = (self.train_ui > 0).sum(axis=0).A.ravel()
-
-        self.similarity_matrix *= sparse.diags(1 / item_orders.clip(min=1) ** self.beta)
+        self.similarity_matrix = self.p[1] * self.p[2]
 
     def recommend(
         self,
@@ -99,7 +104,6 @@ class RP3Beta(BaseRecommender, DataLoaderSaver):
                         ),
                         target_users,
                     ),
-                    disable=not self.show_progress,
                 )
             )
 
@@ -120,11 +124,10 @@ class RP3Beta(BaseRecommender, DataLoaderSaver):
         if u_code is not None:
             exclude_items = []
             if filter_out_interacted_items:
-                exclude_items = self.train_ui.indices[
-                    self.train_ui.indptr[u_code] : self.train_ui.indptr[u_code + 1]
+                exclude_items = self.p[0].indices[
+                    self.p[0].indptr[u_code] : self.p[0].indptr[u_code + 1]
                 ]
-
-            scores = self.p_ui[u_code] * self.similarity_matrix
+            scores = self.p[0][u_code] * self.similarity_matrix
             u_recommended_items = scores.indices[
                 (-scores.data).argsort()[: n_recommendations + len(exclude_items)]
             ]

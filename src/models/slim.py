@@ -8,7 +8,7 @@ import pandas as pd
 from scipy import sparse
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.linear_model import ElasticNet
-from sklearn.utils.testing import ignore_warnings
+from sklearn.utils._testing import ignore_warnings
 from tqdm import tqdm
 
 from ..data.initializer import DataLoaderSaver
@@ -27,7 +27,6 @@ class SLIM(BaseRecommender, DataLoaderSaver):
         iterations=3,
         show_progress=True,
     ):
-
         super().__init__()
 
         self.alpha = alpha
@@ -156,7 +155,6 @@ class SLIM(BaseRecommender, DataLoaderSaver):
         """
         u_code = self.user_id_code.get(user)
         if u_code is not None:
-
             exclude_items = []
             if filter_out_interacted_items:
                 exclude_items = self.train_ui.indices[

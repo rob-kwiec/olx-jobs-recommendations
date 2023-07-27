@@ -21,12 +21,11 @@ def ranking_metrics(test_matrix, recommendations, k=10):
     items_number = test_matrix.shape[1]
     result = []
 
-    for (user_count, user) in tqdm(enumerate(recommendations[:, 0])):
+    for user_count, user in tqdm(enumerate(recommendations[:, 0])):
         u_interacted_items = get_interacted_items(test_matrix, user)
         interacted_items_amount = len(u_interacted_items)
 
         if interacted_items_amount > 0:  # skip users with no items in test set
-
             # evaluation
             success_statistics = calculate_successes(
                 k, recommendations, u_interacted_items, user_count
@@ -95,7 +94,7 @@ def calculate_mrr(user_successes):
 
 def calculate_f(precision, recall, f):
     return (
-        (f ** 2 + 1) * (precision * recall) / (f ** 2 * precision + recall)
+        (f**2 + 1) * (precision * recall) / (f**2 * precision + recall)
         if precision + recall > 0
         else 0
     )
@@ -126,7 +125,6 @@ def calculate_ndcg(interacted_items_amount, k, user_successes):
 
 
 def calculate_successes(k, recommendations, u_interacted_items, user_count):
-
     items = recommendations[user_count, 1 : k + 1]
     user_successes = np.isin(items, u_interacted_items)
 

@@ -56,13 +56,12 @@ def precision_total(test_ui, recommendations, top_k=10):
     relevant_users = 0
     precision_sum = 0
 
-    for (nb_user, user) in tqdm(enumerate(recommendations[:, 0])):
+    for nb_user, user in tqdm(enumerate(recommendations[:, 0])):
         u_rated_items = set(
             test_ui.indices[test_ui.indptr[user] : test_ui.indptr[user + 1]]
         )
 
         if len(u_rated_items) > 0:  # skip users with no items in test set
-
             nb_user_successes = sum(
                 [
                     1

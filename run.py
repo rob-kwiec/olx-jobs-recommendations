@@ -46,9 +46,10 @@ def parse_args(parser):
             "prod2vec",
             "rp3beta",
             "slim",
-            "ligthfm",
+            "lightfm",
             "toppop",
             "random",
+            "p3ltr",
         ],
     )
     parser.add_argument(
@@ -57,7 +58,14 @@ def parse_args(parser):
         default=["toppop", "random", "perfect", "perfect_cf", "perfect_cf_d3"],
     )
     parser.add_argument(
-        "--steps", type=json.loads, default=["prepare", "tune", "run", "evaluate"]
+        "--steps",
+        type=json.loads,
+        default=[
+            "prepare",
+            "tune",
+            "run",
+            "evaluate",
+        ],
     )
     parser.add_argument("--n_recommendations", type=int, default=10)
     parser.add_argument("--validation_target_users_size", type=int, default=30000)

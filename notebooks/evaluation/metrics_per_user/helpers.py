@@ -3,7 +3,6 @@ import numpy as np
 
 
 def add_column_bin(df, column, nbins):
-
     df = df.copy()
     df[f"{column}_bin"] = pd.cut(
         df[column].fillna(value=np.nan),
