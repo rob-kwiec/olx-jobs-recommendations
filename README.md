@@ -18,6 +18,7 @@ Currently implemented models:
 - SLIM: proposed in [SLIM: Sparse Linear Methods for Top-N Recommender Systems](https://www.researchgate.net/publication/220765374_SLIM_Sparse_Linear_Methods_for_Top-N_Recommender_Systems)
 - LightFM: proposed in [Metadata Embeddings for User and Item Cold-start Recommendations](https://www.researchgate.net/publication/280589936_Metadata_Embeddings_for_User_and_Item_Cold-start_Recommendations);
   implementation based on the original [LightFM](https://github.com/lyst/lightfm) implementation
+- P3LTR: our method described in [Learning edge importance in bipartite graph-based recommendations](https://annals-csis.org/proceedings/2022/drp/191.html)
   
 ## Environment configuration
 

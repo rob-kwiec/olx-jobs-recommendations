@@ -39,6 +39,14 @@ MODEL_SEARCH_SPACES = {
         Integer(1, 100, name="max_sampled"),
         Integer(1, 20, name="epochs"),
     ],
+    "p3ltr": [
+        Real(0.001, 0.2, name="regularization"),
+        Real(0.001, 0.02, name="learning_rate"),
+        Integer(80, 200, name="batch_size"),
+        Integer(80, 150, name="iterations"),
+        Integer(1, 1000, name="top_k"),
+        Categorical(["ratio", "log_ratio", "log_ratio_boosted"], name="loss"),
+    ],
 }
 
 
@@ -48,4 +56,5 @@ MODEL_TUNING_CONFIGURATION = {
     "slim": {"n_calls": 100, "x0": [0, 0, 1]},
     "als": {"n_calls": 100},
     "lightfm": {"n_calls": 100},
+    "p3ltr": {"n_calls": 100},
 }

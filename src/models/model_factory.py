@@ -8,6 +8,7 @@ from .rp3beta import RP3Beta
 from .slim import SLIM
 from .toppop import TopPop
 from .perfect import Perfect
+from .p3ltr import P3LTR
 
 
 def initialize_model(model_type: str, **kwargs):
@@ -42,4 +43,6 @@ def initialize_model(model_type: str, **kwargs):
         )
     if model_type == "lightfm":
         return LFM(**kwargs)
+    if model_type == "p3ltr":
+        return P3LTR(**kwargs)
     raise ValueError(model_type)

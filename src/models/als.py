@@ -95,7 +95,7 @@ class ALS(BaseRecommender, DataLoaderSaver):
         """
         Fit the model
         """
-        self.model.fit(self.train_ui.T, show_progress=self.show_progress)
+        self.model.fit(self.train_ui, show_progress=self.show_progress)
 
     def recommend(
         self,
@@ -140,18 +140,12 @@ class ALS(BaseRecommender, DataLoaderSaver):
         u_code = self.user_id_code.get(user)
         u_recommended_items = []
         if u_code is not None:
-
-            u_recommended_items = list(
-                zip(
-                    *self.model.recommend(
-                        u_code,
-                        self.train_ui,
-                        N=n_recommendations,
-                        filter_already_liked_items=filter_out_interacted_items,
-                    )
-                )
+            u_recommended_items = self.model.recommend(
+                u_code,
+                self.train_ui[u_code],
+                N=n_recommendations,
+                filter_already_liked_items=filter_out_interacted_items,
             )[0]
-
             u_recommended_items = [self.item_code_id[i] for i in u_recommended_items]
 
         return (

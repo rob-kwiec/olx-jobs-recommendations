@@ -18,7 +18,6 @@ class Paths:
         model_name=None,
         repository_path=None,
     ):
-
         self.repository_path = (
             Path(*Path(os.path.realpath(__file__)).parts[:-3])
             if repository_path is None

@@ -34,6 +34,7 @@ venv: ./.venv/.requirements
 .venv:
 	$(VIRTUALENV) $(VENV)
 	$(PIP) install -U pip setuptools wheel
+	$(PIP) install pip-tools
 
 .venv/.requirements: .venv
 	$(PIP) install -r $(PROJECT_DIR)/requirements.txt
