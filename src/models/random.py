@@ -11,6 +11,7 @@ from tqdm import tqdm
 
 from ..data.initializer import DataLoaderSaver
 from .base import BaseRecommender
+from .preprocessing import restrict_to_unique_user_item_pair
 
 
 class Random(BaseRecommender, DataLoaderSaver):
@@ -35,7 +36,7 @@ class Random(BaseRecommender, DataLoaderSaver):
         Prepare interactions dataset for training model
         """
 
-        data = self.interactions.copy()
+        data = restrict_to_unique_user_item_pair(self.interactions.copy())
 
         self.user_code_id = dict(enumerate(data["user"].unique()))
         self.user_id_code = {v: k for k, v in self.user_code_id.items()}

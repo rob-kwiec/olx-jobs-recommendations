@@ -11,6 +11,7 @@ from tqdm import tqdm
 
 from ..data.initializer import DataLoaderSaver
 from .base import BaseRecommender
+from .preprocessing import restrict_to_unique_user_item_pair
 
 WORKERS = cpu_count()
 
@@ -149,7 +150,8 @@ class Prod2Vec(BaseRecommender, DataLoaderSaver):
         """
         Prepare sequences for training the Word2Vec model
         """
-        self.train_sequences = _interactions_to_list_of_lists(self.interactions)
+        data = restrict_to_unique_user_item_pair(self.interactions.copy())
+        self.train_sequences = _interactions_to_list_of_lists(data)
 
     def fit(self):
         """

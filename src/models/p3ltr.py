@@ -15,8 +15,8 @@ class P3LTR(BaseRecommender, DataLoaderSaver):
         self,
         learning_rate=0.1,
         regularization=0.1,
-        batch_size=100,
-        iterations=100,
+        batch_size=10,
+        iterations=10,
         top_k=10,
         user_selection="random",
         loss="log_ratio",
@@ -53,6 +53,8 @@ class P3LTR(BaseRecommender, DataLoaderSaver):
             feature_encoders=self.trainer.feature_encoders,
             feature_preprocessor=self.trainer.feature_preprocessor,
         )
+        print(self.interactions)
+        print(self.trainer.feature_encoders[0].linear_events)
         self.predictor.set_interactions(self.interactions)
         self.predictor.preprocess()
         self.predictor.fit()

@@ -12,6 +12,7 @@ from tqdm import tqdm
 
 from ..data.initializer import DataLoaderSaver
 from .base import BaseRecommender
+from .preprocessing import restrict_to_unique_user_item_pair
 
 
 class Perfect(BaseRecommender, DataLoaderSaver):
