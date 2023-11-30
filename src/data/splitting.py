@@ -69,9 +69,9 @@ def split(
     splitting_config=None,
     restrict_to_train_users=True,
     filter_out_already_interacted_items=True,
-    restrict_train_to_unique_user_item_pairs=True,
+    restrict_train_to_unique_user_item_pairs=False,
     restrict_test_to_unique_user_item_pairs=True,
-    replace_events_by_ones=True,
+    replace_events_by_ones=False,
 ):
     """
     Main function used for splitting the dataset into the train and test sets.

@@ -4,6 +4,17 @@ import pandas as pd
 import torch
 
 
+def restrict_to_unique_user_item_pair(dataframe):
+    """
+    Returns pd.DataFrame where each (user, item) pair appears only once.
+    Returned timestamp is the timestamp of the first (user, item) interaction.
+    Returned event is replaced with 1.
+    """
+    output = dataframe.groupby(["user", "item"]).agg({"timestamp": "min"}).reset_index()
+    output["event"] = 1
+    return output
+
+
 def prepare_event_features(
     df, user_column, item_column, event_column, timestamp_column, event_mapping
 ):

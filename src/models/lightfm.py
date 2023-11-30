@@ -13,6 +13,7 @@ from lightfm import LightFM
 
 from ..data.initializer import DataLoaderSaver
 from .base import BaseRecommender
+from .preprocessing import restrict_to_unique_user_item_pair
 
 
 class LFM(BaseRecommender, DataLoaderSaver):
@@ -155,7 +156,7 @@ class LFM(BaseRecommender, DataLoaderSaver):
         Prepare interactions dataset for training model
         """
 
-        data = self.interactions.copy()
+        data = restrict_to_unique_user_item_pair(self.interactions.copy())
         data["event_value"] = 1
 
         self.user_code_id = dict(enumerate(data["user"].unique()))

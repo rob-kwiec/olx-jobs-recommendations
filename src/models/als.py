@@ -10,6 +10,7 @@ from tqdm import tqdm
 
 from ..data.initializer import DataLoaderSaver
 from .base import BaseRecommender
+from .preprocessing import restrict_to_unique_user_item_pair
 
 
 class ALS(BaseRecommender, DataLoaderSaver):
@@ -76,7 +77,7 @@ class ALS(BaseRecommender, DataLoaderSaver):
         Prepare interactions dataset for training model
         """
 
-        data = self.interactions.copy()
+        data = restrict_to_unique_user_item_pair(self.interactions.copy())
         data["event_value"] = self.event_weights_multiplier
 
         self.user_code_id = dict(enumerate(data["user"].unique()))
