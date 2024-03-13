@@ -48,7 +48,7 @@ The input data file *interactions.csv* should be stored in the directory *data/r
 For example, *data/raw/jobs_published/interactions.csv*.
 The file is expected to contain the following columns: *user, item, event, timestamp*.
 
-To reproduce our results [download](https://www.kaggle.com/olxdatascience/olx-jobs-interactions) the
+To reproduce our results [download](https://www.kaggle.com/datasets/olxdatascience/olx-jobs-interactions) the
 **olx-jobs dataset** from Kaggle.
 
 ### Running
