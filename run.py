@@ -36,20 +36,20 @@ def parse_args(parser):
     Returns:
         Dict of the arguments
     """
-    parser.add_argument("--dataset", type=str, default="jobs_published")
+    parser.add_argument("--dataset", type=str, default="allrecipes")
     parser.add_argument("--target_users", type=str, default="all")
     parser.add_argument(
         "--models",
         type=json.loads,
         default=[
-            "als",
-            "prod2vec",
+            # "als",
+            # "prod2vec",
             "rp3beta",
-            "slim",
-            "lightfm",
-            "toppop",
-            "random",
-            "p3ltr",
+            # "slim",
+            # "lightfm",
+            # "toppop",
+            # "random",
+            # "p3ltr",
         ],
     )
     parser.add_argument(
@@ -61,13 +61,14 @@ def parse_args(parser):
         "--steps",
         type=json.loads,
         default=[
-            "prepare",
+            # "prepare",
             "tune",
             "run",
             "evaluate",
         ],
     )
-    parser.add_argument("--n_recommendations", type=int, default=10)
+    parser.add_argument("--n_recommendations", type=int, default=20)
+    parser.add_argument("--tuning_metric", type=str, default="recall")
     parser.add_argument("--validation_target_users_size", type=int, default=30000)
     parser.add_argument("--validation_fraction_users", type=float, default=0.2)
     parser.add_argument("--validation_fraction_items", type=float, default=0.2)
@@ -203,6 +204,7 @@ def step_tune(
     path_tuning_dir,
     n_recommendations,
     model_names,
+    metric,
 ):
     """
     Function for executing "tune" step of the script.
@@ -225,6 +227,7 @@ def step_tune(
             target_users=target_users,
             preprocessed_test=preprocessed_validation,
             n_recommendations=n_recommendations,
+            metric=metric,
             output_dir=path_tuning_dir,
         )
 
@@ -348,6 +351,7 @@ def steps_factory(step, args, paths):
                 for model in args["models"]
                 if model not in args["models_skip_tuning"]
             ],
+            metric=args["tuning_metric"],
         )
 
     if step == "run":
