@@ -18,11 +18,11 @@ class FeatureEncoder(torch.nn.Module):
     A model for producing edge scores based on edge features.
     """
 
-    def __init__(self, event_size):
+    def __init__(self, event_size, init_degree_param):
         super(FeatureEncoder, self).__init__()
 
         self.param_destination_degree = nn.Parameter(
-            torch.tensor([[0.0]], requires_grad=True)
+            torch.tensor([[init_degree_param]], requires_grad=True)
         )
         self.recency = nn.Parameter(torch.tensor([[0.0]], requires_grad=True))
 
@@ -53,6 +53,8 @@ def loss_function_factory(loss):
         return loss_ratio
     if loss == "log_ratio":
         return loss_log_ratio
+    if loss == "log_ratio_k":
+        return loss_log_ratio_k
     if loss == "log_ratio_boosted":
         return loss_log_ratio_boosted
     raise ValueError(loss)
@@ -65,6 +67,18 @@ def loss_ratio(validation_node_score, scores, parameters, regularization, **kwar
 
 def loss_log_ratio(validation_node_score, scores, parameters, regularization, **kwargs):
     dif = torch.log(torch.mean(torch.flatten(scores[0])) / validation_node_score)
+    return dif + regularization * torch.sum(parameters**2)
+
+
+def loss_log_ratio_k(
+    validation_node_score, scores, parameters, regularization, **kwargs
+):
+    # print(torch.mean(torch.flatten(scores[0])[k:k+1]))
+    # print('--------')
+    s = torch.flatten(scores[0])
+    scores_pos = s[s > 0]
+    cutoff = len(scores_pos) - 1
+    dif = torch.log(scores_pos[cutoff] / validation_node_score)
     return dif + regularization * torch.sum(parameters**2)
 
 
@@ -219,8 +233,15 @@ class P3LTRTrainer(BaseRecommender, DataLoaderSaver):
 
         # initalize feature_encoder
         self.feature_encoders = [
-            FeatureEncoder(len(self.feature_preprocessor.event_mapping))
-            for i in range(3)
+            FeatureEncoder(
+                len(self.feature_preprocessor.event_mapping), init_degree_param=0.0
+            )
+            for i in range(2)
+        ]
+        self.feature_encoders = self.feature_encoders + [
+            FeatureEncoder(
+                len(self.feature_preprocessor.event_mapping), init_degree_param=-1.0
+            )
         ]
 
         # # create a graph

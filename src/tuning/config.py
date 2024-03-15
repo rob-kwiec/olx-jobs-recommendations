@@ -4,7 +4,7 @@ Module with defined configuration for optimization
 from skopt.space import Real, Integer, Categorical
 
 MODEL_SEARCH_SPACES = {
-    "rp3beta": [Real(0, 2, name="alpha"), Real(0, 2, name="beta")],
+    "rp3beta": [Real(-10, 2, name="alpha"), Real(-10, 2, name="beta")],
     "prod2vec": [
         Integer(32, 512, name="vector_size"),
         Real(0.01, 0.5, name="alpha"),
@@ -51,10 +51,10 @@ MODEL_SEARCH_SPACES = {
 
 
 MODEL_TUNING_CONFIGURATION = {
-    "rp3beta": {"n_calls": 100},
+    "rp3beta": {"n_calls": 30},
     "prod2vec": {"n_calls": 100},
     "slim": {"n_calls": 100, "x0": [0, 0, 1]},
     "als": {"n_calls": 100},
     "lightfm": {"n_calls": 100},
-    "p3ltr": {"n_calls": 100},
+    "p3ltr": {"n_calls": 30},
 }
