@@ -16,15 +16,17 @@ from .config import MODEL_SEARCH_SPACES, MODEL_TUNING_CONFIGURATION
 def evaluate(
     recommendations_df,
     preprocessed_test,
+    metric,
     top_k=10,
 ):
     """
-    Calculates precision score based on provided recommendations dataframe
+    Calculates given metric based on provided recommendations dataframe
     and test interactions dataset
     :param recommendations_df: recommendations dataframe
     :param preprocessed_test: tuple with user_id_code, item_id_code, test_ui
+    :param metric: metric
     :param top_k: top k interactions to evaluate
-    :return: precision score
+    :return: value of a metric
     """
     recommendations_df = recommendations_df.iloc[:, : top_k + 1].copy()
     user_id_code, item_id_code, test_ui = preprocessed_test
@@ -41,10 +43,20 @@ def evaluate(
     )
     recommendations_array = np.array(pd.concat([users, items], axis=1))
 
-    return precision_total(test_ui, recommendations_array, top_k=top_k)
+    metric_function = metric_factory(metric)
+
+    return metric_function(test_ui, recommendations_array, top_k=top_k)
 
 
-def precision_total(test_ui, recommendations, top_k=10):
+def metric_factory(metric):
+    if metric == "precision":
+        return precision_total
+    if metric == "recall":
+        return recall_total
+    raise ValueError(f"Metric {metric} is not supported")
+
+
+def precision_total(test_ui, recommendations, top_k):
     """
     Calculates precision score based on provided preprocessed recommendations numpy array
     and test interactions matrix
@@ -74,6 +86,38 @@ def precision_total(test_ui, recommendations, top_k=10):
             precision_sum += nb_user_successes / top_k
 
     return precision_sum / relevant_users
+
+
+def recall_total(test_ui, recommendations, top_k):
+    """
+    Calculates recall score based on provided preprocessed recommendations numpy array
+    and test interactions matrix
+    :param test_ui:
+    :param recommendations:
+    :param top_k:
+    :return:
+    """
+    relevant_users = 0
+    recall_sum = 0
+
+    for nb_user, user in tqdm(enumerate(recommendations[:, 0])):
+        u_rated_items = set(
+            test_ui.indices[test_ui.indptr[user] : test_ui.indptr[user + 1]]
+        )
+
+        if len(u_rated_items) > 0:  # skip users with no items in test set
+            nb_user_successes = sum(
+                [
+                    1
+                    for item in recommendations[nb_user, 1 : top_k + 1]
+                    if item in u_rated_items
+                ]
+            )
+
+            relevant_users += 1
+            recall_sum += nb_user_successes / len(u_rated_items)
+
+    return recall_sum / relevant_users
 
 
 def save_evaluation_results(model_name, score, model_parameters, output_dir):
@@ -109,6 +153,7 @@ def tune(
     preprocessed_test,
     n_recommendations,
     output_dir,
+    metric="precision",
 ):
     """
     Runs optimization for model
@@ -117,6 +162,7 @@ def tune(
     :param target_users: Target users for making recommendations
     :param preprocessed_test: tuple with user_id_code, item_id_code, test_ui
     :param n_recommendations: Number of recommendations to predict
+    :param metric: Metric that should be optimized
     :param output_dir: Output path for storing iteration results
     :return:
     """
@@ -136,7 +182,10 @@ def tune(
                 target_users=target_users, n_recommendations=n_recommendations
             )
             score = evaluate(
-                recommendations, preprocessed_test, top_k=n_recommendations
+                recommendations,
+                preprocessed_test,
+                top_k=n_recommendations,
+                metric=metric,
             )
         except ValueError:
             score = 0
